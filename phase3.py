@@ -1,5 +1,6 @@
 from Bio import SeqIO
 from collections import defaultdict
+import pandas as pd
 
 def extract_spacers_and_conservation(fasta_path, spacer_length=30):
     """
@@ -90,23 +91,65 @@ def spacers_to_dataframe(spacer_dict, total_genomes):
     df = pd.DataFrame(spacer_list)
     return df
 
+
+def spacers_to_dataframe_eff(db_path, total_genomes, batch_size=100000, output_csv='spacers_summary.csv'):
+    """
+    Convert disk-backed spacer database to pandas DataFrame in batches,
+    avoiding out-of-memory issues.
+    
+    Parameters
+    ----------
+    db_path : str
+        Path to shelve (disk-backed) spacer db.
+    total_genomes : int
+        Count of unique input genomes.
+    batch_size : int
+        Number of spacers processed per batch (default: 100k).
+    output_csv : str
+        Output file for results (written incrementally).
+    
+    Returns
+    -------
+    None
+        Writes results directly to CSV to avoid keeping full DataFrame in memory.
+    """
+    db = shelve.open(db_path, flag='r')
+    spacer_list = []
+    count = 0
+    for spacer in db:
+        genome_ids = db[spacer]
+        n_genomes = len(genome_ids)
+        conservation_pct = 100 * n_genomes / total_genomes
+        spacer_list.append({
+            "spacer": spacer,
+            "n_genomes": n_genomes,
+            "conservation_pct": conservation_pct,
+            "genome_ids": ",".join(genome_ids)
+        })
+        count += 1
+        if count % batch_size == 0:
+            pd.DataFrame(spacer_list).to_csv(output_csv, mode='a', header=(count == batch_size), index=False)
+            spacer_list = []
+    # Write any remaining rows
+    if spacer_list:
+        pd.DataFrame(spacer_list).to_csv(output_csv, mode='a', header=(count < batch_size), index=False)
+    db.close()
+
+
 # ==== Usage Example ====
 if __name__ == "__main__":
-    fasta_path = "cleaned_dengue_genomes.fasta"
+    fasta_path = "filtered_dengue_genomes.fasta"
     spacer_length = 30
+    db_path = 'spacers.db'
 
-    # Step 3.1 & 3.2 & 3.3 combined
-    spacer_dict = extract_spacers_and_conservation(fasta_path, spacer_length=spacer_length)
-    
+    # 1. Extract spacers from FASTA to disk (RAM efficient)
+    extract_spacers_disk(fasta_path, spacer_length, db_path)  # From previous response
+
+    # 2. Get total genome count
     genome_ids = set()
     for record in SeqIO.parse(fasta_path, "fasta"):
         genome_ids.add(record.id)
     total_genomes = len(genome_ids)
-    
-    # Convert to DataFrame for easier downstream processing
-    df_spacers = spacers_to_dataframe(spacer_dict, total_genomes)
-    df_spacers = df_spacers.sort_values("conservation_pct", ascending=False).reset_index(drop=True)
-    df_spacers.to_csv("spacer_conservation.csv", index=False)
 
-    print(df_spacers.head())
-    print(f"Total unique spacers extracted: {len(df_spacers)}")
+    # 3. Convert disk-based spacers to dataframe/batch CSV
+    spacers_to_dataframe_eff(db_path, total_genomes, batch_size=100000, output_csv='spacers_conservation.csv')

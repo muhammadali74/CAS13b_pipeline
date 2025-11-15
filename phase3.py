@@ -35,7 +35,30 @@ def extract_spacers_and_conservation(fasta_path, spacer_length=30):
         for spacer in spacers_in_this_genome:
             spacer_dict[spacer].add(genome_id)
     
-    return spacer_dict
+    return spacer_dict  
+
+
+from Bio import SeqIO
+import shelve
+
+def extract_spacers_disk(fasta_path, spacer_length=30, db_path='spacers.db'):
+    db = shelve.open(db_path, flag='c')  # disk-backed dictionary
+    for record in SeqIO.parse(fasta_path, "fasta"):
+        seq = str(record.seq).upper()
+        genome_id = record.id
+        spacers_in_this_genome = set()
+        for i in range(len(seq) - spacer_length + 1):
+            spacer = seq[i:i+spacer_length]
+            if "N" in spacer or "-" in spacer:
+                continue
+            spacers_in_this_genome.add(spacer)
+        for spacer in spacers_in_this_genome:
+            genomes = db.get(spacer, set())
+            genomes.add(genome_id)
+            db[spacer] = genomes
+    db.close()
+    # To read: db = shelve.open(db_path)
+
 
 def spacers_to_dataframe(spacer_dict, total_genomes):
     """

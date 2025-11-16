@@ -1,6 +1,7 @@
 from Bio import SeqIO
 from collections import defaultdict
 import pandas as pd
+from tqdm import tqdm
 
 def extract_spacers_and_conservation(fasta_path, spacer_length=30):
     """
@@ -44,7 +45,10 @@ import shelve
 
 def extract_spacers_disk(fasta_path, spacer_length=30, db_path='spacers.db'):
     db = shelve.open(db_path, flag='c')  # disk-backed dictionary
-    for record in SeqIO.parse(fasta_path, "fasta"):
+    # Count total number of records first (optional, for progress bar length)
+    total_records = sum(1 for _ in SeqIO.parse(fasta_path, "fasta"))
+
+    for record in tqdm(SeqIO.parse(fasta_path, "fasta"), total=total_records):
         seq = str(record.seq).upper()
         genome_id = record.id
         spacers_in_this_genome = set()
@@ -59,7 +63,6 @@ def extract_spacers_disk(fasta_path, spacer_length=30, db_path='spacers.db'):
             db[spacer] = genomes
     db.close()
     # To read: db = shelve.open(db_path)
-
 
 def spacers_to_dataframe(spacer_dict, total_genomes):
     """
@@ -140,7 +143,7 @@ def spacers_to_dataframe_eff(db_path, total_genomes, batch_size=100000, output_c
 if __name__ == "__main__":
     fasta_path = "filtered_dengue_genomes.fasta"
     spacer_length = 30
-    db_path = 'spacers.db'
+    db_path = '/mnt/tmp_cas_part/spacers.db'
 
     # 1. Extract spacers from FASTA to disk (RAM efficient)
     extract_spacers_disk(fasta_path, spacer_length, db_path)  # From previous response
@@ -152,4 +155,4 @@ if __name__ == "__main__":
     total_genomes = len(genome_ids)
 
     # 3. Convert disk-based spacers to dataframe/batch CSV
-    spacers_to_dataframe_eff(db_path, total_genomes, batch_size=100000, output_csv='spacers_conservation.csv')
+    spacers_to_dataframe_eff(db_path, total_genomes, batch_size=10000, output_csv='spacers_conservation.csv')

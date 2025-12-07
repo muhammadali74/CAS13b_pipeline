@@ -1,0 +1,50 @@
+
+DENV-1:
+  • Identified 349 top_k candidates for DENV-1.
+  • Mean predicted efficiency: 0.734 (±0.061)
+  • Highest-conserved candidate: GGAAGAACAAGACGGGAACTTTGTGTGTCG
+    - Coverage: 10199 / 14906 genomes (68.42%)
+    - Predicted efficiency: 0.804
+  • Best-efficiency candidate: GGAGTAGTCGTACTAGGATCACAAGAAGGA
+    - Predicted efficiency: 0.881
+    - Coverage: 6848 / 14906 genomes (45.94%)
+
+DENV-2:
+  • Identified 352 top_k candidates for DENV-2.
+  • Mean predicted efficiency: 0.749 (±0.053)
+  • Highest-conserved candidate: GGGAGTCAACATAGAAGCAGAACCTCCATT
+    - Coverage: 8233 / 11975 genomes (68.75%)
+    - Predicted efficiency: 0.613
+  • Best-efficiency candidate: GGAGACAGAGGATGGGGAAATGGATGTGGA
+    - Predicted efficiency: 0.878
+    - Coverage: 5073 / 11975 genomes (42.36%)
+
+DENV-3:
+  • Identified 396 top_k candidates for DENV-3.
+  • Mean predicted efficiency: 0.751 (±0.067)
+  • Highest-conserved candidate: GGTGCAAGGCGGATGGGCATCTTGGGAGAC
+    - Coverage: 3422 / 4897 genomes (69.88%)
+    - Predicted efficiency: 0.859
+  • Best-efficiency candidate: GGGGTTGGATCGCAAGAGGGAGCAATGCAC
+    - Predicted efficiency: 0.882
+    - Coverage: 2028 / 4897 genomes (41.41%)
+
+DENV-4:
+  • Identified 374 top_k candidates for DENV-4.
+  • Mean predicted efficiency: 0.743 (±0.062)
+  • Highest-conserved candidate: GGAACAAGATGTCCAAGGCAAGGAGAGCCT
+    - Coverage: 2309 / 2868 genomes (80.51%)
+    - Predicted efficiency: 0.836
+  • Best-efficiency candidate: GGGGTAGAACATGGAGGATGCGTCACAACC
+    - Predicted efficiency: 0.888
+    - Coverage: 1370 / 2868 genomes (47.77%)
+
+UNCLASSIFIED:
+  • Identified 269 top_k candidates for Unclassified.
+  • Mean predicted efficiency: 0.760 (±0.060)
+  • Highest-conserved candidate: GGGTGACCCAGAATGGGAGATTGATAACAG
+    - Coverage: 1397 / 3411 genomes (40.96%)
+    - Predicted efficiency: 0.854
+  • Best-efficiency candidate: GGGGTCGGTTGTGGAAGAGGTGGCTGGTCA
+    - Predicted efficiency: 0.910
+    - Coverage: 1059 / 3411 genomes (31.05%)

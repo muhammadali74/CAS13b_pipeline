@@ -50,7 +50,7 @@ def annotate_rnafold(csv_in, csv_out):
     df.to_csv(csv_out, index=False)
     print(f"Annotated CSV with RNAfold results saved as: {csv_out}")
 
-# Example usage
+
 if __name__ == "__main__":
     input_csv = "spacers_conservation_filtered.csv"
     output_csv = "spacers_conservation_filtered_struct.csv"

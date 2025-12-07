@@ -32,10 +32,10 @@ def annotate_spacers(input_csv, output_csv, gc_min=40, gc_max=60, homopolymer_ru
     
     # Phase 4.3: Filtering
     filtered_df = df[
-        (df['GC_content'] >= gc_min) &
-        (df['GC_content'] <= gc_max) &
-        (df['conservation_pct'] >= conservation_threshold) &
-        (~df['Has_homopolymer'])
+        # (df['GC_content'] >= gc_min) &
+        # (df['GC_content'] <= gc_max) &
+        (df['conservation_pct'] >= conservation_threshold)
+        # (~df['Has_homopolymer'])
     ].reset_index(drop=True)
     
     # Save filtered table
@@ -47,5 +47,5 @@ def annotate_spacers(input_csv, output_csv, gc_min=40, gc_max=60, homopolymer_ru
 # Example usage:
 if __name__ == "__main__":
     input_csv = "spacers_conservation_filtered_annotated.csv"
-    output_csv = "spacers_conservation_filtered.csv"
+    output_csv = "new/spacers_conservation_filtered.csv"
     annotate_spacers(input_csv, output_csv)

@@ -257,13 +257,10 @@ def extract_alignment_stats(conservation_results):
     return stats
 
 
-# ============================================================================
-# EXAMPLE USAGE
-# ============================================================================
 
 if __name__ == "__main__":
     # Paths (modify these to match your data)
-    input_fasta = "cleaned_dengue_genomes.fasta"
+    input_fasta = "filtered_dengue_genomes.fasta"
     output_alignment = "dengue_alignment.fasta"
     output_conservation_csv = "conservation_scores.csv"
     
